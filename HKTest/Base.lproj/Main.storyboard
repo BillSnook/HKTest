@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="HKTest" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -15,11 +17,51 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HealthKit is not available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gjL-Br-lfl">
+                                <rect key="frame" x="20" y="20" width="560" height="324"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="324" id="9eU-SX-Qhh"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d54-lx-rjK">
+                                <rect key="frame" x="220" y="373" width="160" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="160" id="CU7-Fm-qq6"/>
+                                    <constraint firstAttribute="height" constant="30" id="m4h-B0-M0B"/>
+                                </constraints>
+                                <state key="normal" title="Send data"/>
+                                <connections>
+                                    <action selector="didTouchSendData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="F6a-6I-Igl"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jv5-vD-MT6">
+                                <rect key="frame" x="20" y="20" width="560" height="324"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="leadingMargin" secondItem="gjL-Br-lfl" secondAttribute="leading" id="Ejt-s1-TSP"/>
+                            <constraint firstItem="gjL-Br-lfl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GHj-c6-h7k"/>
+                            <constraint firstItem="d54-lx-rjK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SOJ-lp-jVq"/>
+                            <constraint firstItem="d54-lx-rjK" firstAttribute="top" secondItem="gjL-Br-lfl" secondAttribute="bottom" constant="29" id="Tdy-RD-dkK"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="gjL-Br-lfl" secondAttribute="trailing" id="Tzs-PQ-pCh"/>
+                            <constraint firstItem="gjL-Br-lfl" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Uvf-La-Akk"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="displayLabel" destination="gjL-Br-lfl" id="Z0D-sD-M0X"/>
+                        <outlet property="displayView" destination="jv5-vD-MT6" id="3uM-1n-jKA"/>
+                        <outlet property="sendButton" destination="d54-lx-rjK" id="yvM-3B-jsr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="291" y="429"/>
         </scene>
     </scenes>
 </document>
