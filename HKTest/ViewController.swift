@@ -10,21 +10,27 @@ import UIKit
 import HealthKit
 import Alamofire
 import SwiftyJSON
+import Charts
+
+typealias	chartData = Array<Dictionary<String,String>>
+
 
 class ViewController: UIViewController {
 
 	@IBOutlet var displayLabel: UILabel!
-	@IBOutlet var displayView: UIView!
+	@IBOutlet weak var barChartView: BarChartView!
 	@IBOutlet var sendButton: UIButton!
 	
 	var hkStore: HKHealthStore?
 	var height, weight: HKQuantitySample?
-	var dataToPost: Array<String> = Array()
+	var dataToPost: chartData = Array()
+	let dateFormatter = NSDateFormatter()
+	let dowFormatter = NSDateFormatter()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		// Do any additional setup after loading the view, typically from a nib.
-		displayView.hidden = true
+
+		barChartView.hidden = true
 		sendButton.enabled = true // false
 		
 		if HKHealthStore.isHealthDataAvailable() {
@@ -44,6 +50,11 @@ class ViewController: UIViewController {
 					}
 				}
 			})
+			dispatch_async( dispatch_get_main_queue() ) {
+				self.setupChart()
+			}
+		} else {
+			displayLabel.text = "Healthkit is not available"
 		}
 		
 	}
@@ -54,14 +65,6 @@ class ViewController: UIViewController {
 	}
 
 	@IBAction func didTouchSendData(sender: AnyObject) {
-		dataToPost = Array()
-		let dateFormatter = NSDateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		let now = NSDate()
-		let nowString = dateFormatter.stringFromDate(now)
-		dataToPost.append(nowString)
-		dataToPost.append("Bill")
-		dataToPost.append("<\(nowString),2345>")
 		self.postData(dataToPost)
 	}
 
@@ -70,40 +73,25 @@ class ViewController: UIViewController {
 			self.displayLabel.text = "Checking for Healthkit data"
 		}
 		
-//		let stepsCount = HKQuantityType.quantityTypeForIdentifier( HKQuantityTypeIdentifierStepCount )
-//		
-//		let stepsSampleQuery = HKSampleQuery(sampleType: stepsCount!,
-//			predicate: nil,
-//			limit: 7,
-//			sortDescriptors: nil)
-//			{ [unowned self] (query, results, error) in
-//				if let results = results as? [HKQuantitySample] {
-//					print( "Results: \(results)" )
-//				}
-//		}
-//		
-//		// Don't forget to execute the Query!
-//		hkStore?.executeQuery(stepsSampleQuery)
-
 		let calendar = NSCalendar.currentCalendar()
 		
 		let interval = NSDateComponents()
 		interval.day = 1
 		
-		// Set the anchor date to Monday at 3:00 a.m.
+		// Set the anchor date to Monday at midnight
 		let anchorComponents = calendar.components([.Day, .Month, .Year, .Weekday], fromDate: NSDate())
-		
-		
 		let offset = (7 + anchorComponents.weekday - 2) % 7
 		anchorComponents.day -= offset
 		anchorComponents.hour = 0
 		
 		guard let anchorDate = calendar.dateFromComponents(anchorComponents) else {
-			fatalError("*** unable to create a valid date from the given components ***")
+			print("*** unable to create a valid date from the given components ***")
+			return
 		}
 		
 		guard let quantityType = HKObjectType.quantityTypeForIdentifier(HKQuantityTypeIdentifierStepCount) else {
-			fatalError("*** Unable to create a step count type ***")
+			print("*** Unable to create a step count type ***")
+			return
 		}
 		
 		// Create the query
@@ -119,103 +107,113 @@ class ViewController: UIViewController {
 			
 			guard let statsCollection = results else {
 				// Perform proper error handling here
-				fatalError("*** An error occurred while calculating the statistics: \(error?.localizedDescription) ***")
+				print("*** An error occurred while calculating the statistics: \(error?.localizedDescription) ***")
+				return
 			}
 			
 			let endDate = NSDate()
 			
-			guard let startDate = calendar.dateByAddingUnit(.Day, value: -7, toDate: endDate, options: []) else {
-				fatalError("*** Unable to calculate the start date ***")
+			guard let startDate = calendar.dateByAddingUnit(.Day, value: -6, toDate: endDate, options: []) else {
+				print("*** Unable to calculate the start date ***")
+				return
 			}
 			
 			// Plot the weekly step counts over the past 3 months
+			self.initStepCount()
 			statsCollection.enumerateStatisticsFromDate(startDate, toDate: endDate) { [unowned self] statistics, stop in
 				
 				if let quantity = statistics.sumQuantity() {
 					let date = statistics.startDate
-					let dateFormatter = NSDateFormatter()
-					dateFormatter.dateFormat = "EEEE"
-					let dateString = dateFormatter.stringFromDate( date )
 					let value = quantity.doubleValueForUnit(HKUnit.countUnit())
-					print("Date: \(dateString), value: \(value)")
+					
+//					let dateFormatter = NSDateFormatter()
+//					dateFormatter.dateFormat = "EEEE"
+//					let dateString = dateFormatter.stringFromDate( date )
+//					print("Date: \(dateString), value: \(value)")
+
 					// Call a custom method to plot each data point.
-///					self.plotWeeklyStepCount(value, forDate: date)
+					self.nextStepCount(value, forDate: date)
 				}
+			}
+			print( "Got data" )
+			dispatch_async( dispatch_get_main_queue() ) {
+				self.fillChart()
 			}
 		}
 		
 		hkStore?.executeQuery(query)
 	}
 	
-	func readMostRecentSample(sampleType:HKSampleType , completion: ((HKSample!, NSError!) -> Void)!) {
-	
-		let past = NSDate.distantPast() 
-		let now = NSDate()
-		let mostRecentPredicate = HKQuery.predicateForSamplesWithStartDate(past, endDate:now, options: .None)
-			
-		let sortDescriptor = NSSortDescriptor(key:HKSampleSortIdentifierStartDate, ascending: false)
-		let limit = 1
-			
-		let sampleQuery = HKSampleQuery(sampleType: sampleType, predicate: mostRecentPredicate, limit: limit, sortDescriptors: [sortDescriptor])
-		{ (sampleQuery, results, error ) -> Void in
-			
-			if let _ = error {
-				completion(nil,error)
-				return;
-			}
-			
-			// Get the first sample
-			let mostRecentSample = results!.first as? HKQuantitySample
-			
-			// Execute the completion closure
-			if completion != nil {
-				completion(mostRecentSample,nil)
-			}
-		}
-		self.hkStore!.executeQuery(sampleQuery)
+	func initStepCount() {
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		dowFormatter.dateFormat = "EEEEEE"
+		
+		dataToPost = Array()
 	}
-
-	func postData( postData: Array<String>) {
-//		let postTarget: String = "http://wiki.movinganalytics.com"
-//		Alamofire.request(.POST, postTarget, parameters: postData, encoding: .JSON)
-//			.responseJSON { response in
-//			guard response.result.error == nil else {
-//				// got an error in getting the data, need to handle it
-//				print("error calling POST on \(postTarget)")
-//				print(response.result.error!)
-//				return
-//			}
-//						
-//			if let value: AnyObject = response.result.value {
-//				// handle the results as JSON, without a bunch of nested if loops
-//				let post = JSON(value)
-//				print("The post is: " + post.description)
-//			}
-//		}
+	func nextStepCount( steps: Double, forDate: NSDate ) {
+		let dayStr = dowFormatter.stringFromDate(forDate)
+		let dateStr = dateFormatter.stringFromDate(forDate)
+		let stepsInt = Int( steps )
+		let stepsStr = String( stepsInt )
+		let dataDictionary = ["dayOfWeek":dayStr,"date":dateStr,"steps":stepsStr]
+		dataToPost.append( dataDictionary )
+	}
+	
+	func postData( postData: chartData) {
 		
 		if let maURL = NSURL( string: "http://wiki.movinganalytics.com" ) {
-		let request = NSMutableURLRequest(URL: maURL)
-		request.HTTPMethod = "POST"
-		request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+			let request = NSMutableURLRequest(URL: maURL)
+			request.HTTPMethod = "POST"
+			request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 		
-		request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(postData, options: [])
-		
-		Alamofire.request(request)
-			.responseJSON { response in
-				print(response)
-				print("Request: \(response.request)")
-				print("Response: \(response.response)")
-				print("Result: \(response.result)")
-				print("Data: \(response.data)")
-// do whatever you want here
-//				switch response.result {
-//				case .Failure(_, let error):
-//					print(error)
-//				case .Success(let responseObject):
-//					print(responseObject)
-//				}
+			var sendData: Array<AnyObject> = Array()
+			let dateStr = dateFormatter.stringFromDate( NSDate() )
+			sendData.append( dateStr )
+			sendData.append( "Bill" )
+			for chartElement in postData {
+				let chartString = "<\(chartElement["date"]!),\(chartElement["steps"]!)>"
+				sendData.append( chartString )
 			}
+			request.HTTPBody = try! NSJSONSerialization.dataWithJSONObject(sendData, options: [])
+//			print( sendData )
+
+			Alamofire.request(request)
+				.responseJSON { response in
+					print(response)
+				}
+
 		}
+	}
+	
+	func setupChart() {
+		barChartView.noDataText = "Preparing data..."
+		barChartView.backgroundColor = UIColor.whiteColor()
+		barChartView.hidden = false
+		barChartView.descriptionText = ""
+		barChartView.xAxis.labelPosition = .Bottom
+		barChartView.rightAxis.enabled = false
+	}
+	
+	func fillChart() {
+		var days: [String?]? = []
+		
+		var dataEntries: [BarChartDataEntry] = []
+		var i = 0
+		for chartElement in dataToPost {
+//			days.append(chartElement["dayOfWeek"]!)
+//			steps.append( chartElement["steps"]! )
+			let dayOfWeek: Double = (chartElement["steps"]! as NSString).doubleValue
+			let dataEntry = BarChartDataEntry( value: dayOfWeek, xIndex: i++ )
+			dataEntries.append(dataEntry)
+
+			days!.append( chartElement["dayOfWeek"]! )
+}
+		
+		let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Daily Steps")
+		chartDataSet.colors = [UIColor.orangeColor()]
+		let chartData = BarChartData(xVals: days, dataSet: chartDataSet)
+		barChartView.data = chartData
+
 	}
 }
 

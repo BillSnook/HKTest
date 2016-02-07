@@ -1,9 +1,13 @@
 PODS:
   - Alamofire (3.1.5)
+  - Charts (2.2.1):
+    - Charts/Core (= 2.2.1)
+  - Charts/Core (2.2.1)
   - SwiftyJSON (2.3.2)
 
 DEPENDENCIES:
   - Alamofire (~> 3.0)
+  - Charts
   - SwiftyJSON (from `https://github.com/SwiftyJSON/SwiftyJSON.git`)
 
 EXTERNAL SOURCES:
@@ -17,6 +21,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: 5f730ba29fd113b7ddd71c1e65d0c630acf5d7b0
+  Charts: 3ff893c1a4416ab6abed7a6d26fa1c13372f3456
   SwiftyJSON: 04ccea08915aa0109039157c7974cf0298da292a
 
 COCOAPODS: 0.39.0
