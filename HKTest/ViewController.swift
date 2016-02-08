@@ -126,11 +126,6 @@ class ViewController: UIViewController {
 					let date = statistics.startDate
 					let value = quantity.doubleValueForUnit(HKUnit.countUnit())
 					
-//					let dateFormatter = NSDateFormatter()
-//					dateFormatter.dateFormat = "EEEE"
-//					let dateString = dateFormatter.stringFromDate( date )
-//					print("Date: \(dateString), value: \(value)")
-
 					// Call a custom method to plot each data point.
 					self.nextStepCount(value, forDate: date)
 				}
@@ -169,7 +164,7 @@ class ViewController: UIViewController {
 			var sendData: Array<AnyObject> = Array()
 			let dateStr = dateFormatter.stringFromDate( NSDate() )
 			sendData.append( dateStr )
-			sendData.append( "Bill" )
+			sendData.append( "Bill - Steps Per Day" )
 			for chartElement in postData {
 				let chartString = "<\(chartElement["date"]!),\(chartElement["steps"]!)>"
 				sendData.append( chartString )
@@ -200,14 +195,12 @@ class ViewController: UIViewController {
 		var dataEntries: [BarChartDataEntry] = []
 		var i = 0
 		for chartElement in dataToPost {
-//			days.append(chartElement["dayOfWeek"]!)
-//			steps.append( chartElement["steps"]! )
-			let dayOfWeek: Double = (chartElement["steps"]! as NSString).doubleValue
+            days!.append( chartElement["dayOfWeek"]! )
+            
+			let dayOfWeek = (chartElement["steps"]! as NSString).doubleValue
 			let dataEntry = BarChartDataEntry( value: dayOfWeek, xIndex: i++ )
 			dataEntries.append(dataEntry)
-
-			days!.append( chartElement["dayOfWeek"]! )
-}
+        }
 		
 		let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Daily Steps")
 		chartDataSet.colors = [UIColor.orangeColor()]

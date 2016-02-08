@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="HealthKit is not available" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gjL-Br-lfl">
-                                <rect key="frame" x="20" y="20" width="560" height="510"/>
+                                <rect key="frame" x="20" y="20" width="560" height="520"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="324" id="9eU-SX-Qhh"/>
                                 </constraints>
@@ -33,11 +33,11 @@
                                 </variation>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jv5-vD-MT6" customClass="BarChartView" customModule="Charts">
-                                <rect key="frame" x="0.0" y="20" width="600" height="510"/>
+                                <rect key="frame" x="0.0" y="20" width="600" height="520"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d54-lx-rjK">
-                                <rect key="frame" x="220" y="560" width="160" height="30"/>
+                                <rect key="frame" x="220" y="550" width="160" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="160" id="CU7-Fm-qq6"/>
                                     <constraint firstAttribute="height" constant="30" id="m4h-B0-M0B"/>
@@ -50,13 +50,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="d54-lx-rjK" secondAttribute="bottom" constant="10" id="0An-pz-FwE"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="d54-lx-rjK" secondAttribute="bottom" constant="20" id="0An-pz-FwE"/>
                             <constraint firstItem="jv5-vD-MT6" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Aqy-Q0-KQ2"/>
-                            <constraint firstItem="d54-lx-rjK" firstAttribute="top" secondItem="jv5-vD-MT6" secondAttribute="bottom" constant="30" id="B8E-8f-j3I"/>
+                            <constraint firstItem="d54-lx-rjK" firstAttribute="top" secondItem="jv5-vD-MT6" secondAttribute="bottom" constant="10" id="B8E-8f-j3I"/>
                             <constraint firstAttribute="leadingMargin" secondItem="gjL-Br-lfl" secondAttribute="leading" id="Ejt-s1-TSP"/>
                             <constraint firstItem="gjL-Br-lfl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="GHj-c6-h7k"/>
                             <constraint firstItem="d54-lx-rjK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="SOJ-lp-jVq"/>
-                            <constraint firstItem="d54-lx-rjK" firstAttribute="top" secondItem="gjL-Br-lfl" secondAttribute="bottom" constant="30" id="Tdy-RD-dkK"/>
+                            <constraint firstItem="d54-lx-rjK" firstAttribute="top" secondItem="gjL-Br-lfl" secondAttribute="bottom" constant="10" id="Tdy-RD-dkK"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gjL-Br-lfl" secondAttribute="trailing" id="Tzs-PQ-pCh"/>
                             <constraint firstItem="gjL-Br-lfl" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="Uvf-La-Akk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="jv5-vD-MT6" secondAttribute="trailing" constant="-20" id="Ynb-p3-NVq"/>
