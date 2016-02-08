@@ -38,7 +38,7 @@ class ViewController: UIViewController {
 			let stepType = HKObjectType.quantityTypeForIdentifier( HKQuantityTypeIdentifierStepCount)
 			let dataTypes: Set<HKQuantityType> = [ stepType! ]
 			hkStore = HKHealthStore()
-			hkStore?.requestAuthorizationToShareTypes( dataTypes, readTypes: dataTypes, completion: {
+			hkStore?.requestAuthorizationToShareTypes( [], readTypes: dataTypes, completion: {
 				( success, error ) in
 				if success {
 					print ( "Authorization succeeds" )
