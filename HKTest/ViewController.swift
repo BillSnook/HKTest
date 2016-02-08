@@ -21,6 +21,8 @@ class ViewController: UIViewController {
 	@IBOutlet weak var barChartView: BarChartView!
 	@IBOutlet var sendButton: UIButton!
 	
+	@IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+	
 	var hkStore: HKHealthStore?
 	var height, weight: HKQuantitySample?
 	var dataToPost: chartData = Array()
@@ -80,8 +82,8 @@ class ViewController: UIViewController {
 		
 		// Set the anchor date to Monday at midnight
 		let anchorComponents = calendar.components([.Day, .Month, .Year, .Weekday], fromDate: NSDate())
-		let offset = (7 + anchorComponents.weekday - 2) % 7
-		anchorComponents.day -= offset
+//		let offset = (7 + anchorComponents.weekday - 2) % 7
+		anchorComponents.day -= 0 // offset
 		anchorComponents.hour = 0
 		
 		guard let anchorDate = calendar.dateFromComponents(anchorComponents) else {
@@ -185,7 +187,7 @@ class ViewController: UIViewController {
 		barChartView.backgroundColor = UIColor.whiteColor()
 		barChartView.hidden = false
 		barChartView.descriptionText = ""
-		barChartView.xAxis.labelPosition = .Bottom
+		barChartView.xAxis.labelPosition = .Top
 		barChartView.rightAxis.enabled = false
 	}
 	
