@@ -15,13 +15,13 @@ import Charts
 typealias	chartData = Array<Dictionary<String,String>>
 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UIGestureRecognizerDelegate {
 
 	@IBOutlet var displayLabel: UILabel!
 	@IBOutlet weak var barChartView: BarChartView!
 	@IBOutlet var sendButton: UIButton!
 	
-	@IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+	@IBOutlet weak var slider: UIView!
 	
 	var hkStore: HKHealthStore?
 	var height, weight: HKQuantitySample?
@@ -54,6 +54,7 @@ class ViewController: UIViewController {
 			})
 			dispatch_async( dispatch_get_main_queue() ) {
 				self.setupChart()
+				self.setupSlider()
 			}
 		} else {
 			displayLabel.text = "Healthkit is not available"
@@ -209,6 +210,30 @@ class ViewController: UIViewController {
 		let chartData = BarChartData(xVals: days, dataSet: chartDataSet)
 		barChartView.data = chartData
 
+	}
+	
+	func setupSlider() {
+		let gesture = UIPanGestureRecognizer(target: self, action: Selector("didSlide:"))
+		barChartView.addGestureRecognizer( gesture )
+		gesture.delegate = self
+
+	}
+	
+	func didSlide(gesture: UIPanGestureRecognizer) {
+		let translation = gesture.translationInView(self.view)
+		print( "x: \(translation.x)" )
+		
+		// Use translation.y to change the position of your customView, e.g.
+//		barChartView.frame.origin.x = translation.x
+		var newX = -translation.x
+		let maxX = view.bounds.size.width / 2.0
+		if newX < 0 {
+			newX = 0
+		} else if newX > maxX {
+			newX = maxX
+		}
+		
+		slider.frame.origin.x = newX
 	}
 }
 
